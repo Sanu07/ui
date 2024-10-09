@@ -1,0 +1,66 @@
+{
+  "Interviewer": "Sanu Ghosh",
+  "Interviewee": "Anchal Sharma",
+  "conversations": [
+    {
+      "question": "Can you tell me what is Circuit breaker? What is Underhad problem Circuit breaker?",
+      "answer": "Yeah, so Circuit Breaker basically manages the state of the system. The thing is state of circuit breaker changes from close to open when failure rate is above a certain threshold which you can configure in your system.",
+      "difficulty": "1",
+      "technology": "Circuit Breaker"
+    },
+    {
+      "question": "Are you comfortable with Kafka and microservice? Any design pattern you have worked in microservice?",
+      "answer": "Yeah, I will. Don't got time. Yeah, one is CQRS pattern.",
+      "difficulty": "2",
+      "technology": "Microservices"
+    },
+    {
+      "question": "Can you tell me what is Circuit breaker? What is Underhad problem Circuit breaker?",
+      "answer": "Yeah, so Circuit Breaker basically manages the state of the system. The thing is state of circuit breaker changes from close to open when failure rate is above a certain threshold which you can configure in your system.",
+      "difficulty": "3",
+      "technology": "Circuit Breaker"
+    },
+    {
+      "question": "Can you tell me what is Circuit breaker? What is Underhad problem Circuit breaker?",
+      "answer": "Yeah, so Circuit Breaker basically manages the state of the system. The thing is state of circuit breaker changes from close to open when failure rate is above a certain threshold which you can configure in your system.",
+      "difficulty": "4",
+      "technology": "Circuit Breaker"
+    },
+    {
+      "question": "Can you tell me?",
+      "answer": "Yeah, so Circuit Breaker.",
+      "difficulty": "5",
+      "technology": "Circuit Breaker"
+    },
+    {
+      "question": "Can you tell me what is Circuit breaker? What is Underhad problem Circuit breaker?",
+      "answer": "Yeah, so Circuit Breaker basically manages the state of the system. The thing is state of circuit breaker changes from close to open when failure rate is above a certain threshold which you can configure in your system.",
+      "difficulty": "4",
+      "technology": "Circuit Breaker"
+    },
+    {
+      "question": "Can you tell me what is Circuit breaker? What is Underhad problem Circuit breaker?",
+      "answer": "Yeah, so Circuit Breaker basically manages the state of the system. The thing is state of circuit breaker changes from close to open when failure rate is above a certain threshold which you can configure in your system.",
+      "difficulty": "3",
+      "technology": "Circuit Breaker"
+    },
+    {
+      "question": "Can you tell me what is Circuit breaker? What is Underhad problem Circuit breaker?",
+      "answer": "Yeah, so Circuit Breaker basically manages the state of the system. The thing is state of circuit breaker changes from close to open when failure rate is above a certain threshold which you can configure in your system.",
+      "difficulty": "2",
+      "technology": "Circuit Breaker"
+    },
+    {
+      "question": "Can you tell me what is Circuit breaker? What is Underhad problem Circuit breaker?",
+      "answer": "Yeah, so Circuit Breaker basically manages the state of the system. The thing is state of circuit breaker changes from close to open when failure rate is above a certain threshold which you can configure in your system.",
+      "difficulty": "1",
+      "technology": "Circuit Breaker"
+    },
+    {
+      "question": "Can you tell me what is Circuit breaker? What is Underhad problem Circuit breaker?",
+      "answer": "Yeah, so Circuit Breaker basically manages the state of the system. The thing is state of circuit breaker changes from close to open when failure rate is above a certain threshold which you can configure in your system.",
+      "difficulty": "5",
+      "technology": "Circuit Breaker"
+    }
+  ]
+}

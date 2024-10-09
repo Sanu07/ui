@@ -1,0 +1,49 @@
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("https://www.nagarro.com/hubfs/Nagarro%20logo_mobile-1.jpg")
+    no-repeat center center fixed;
+  background-size: cover;
+  opacity: 0.1;
+  z-index: -1;
+}
+
+.container-welcome {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #47d7ac;
+  margin-top: 200px;
+}
+
+.btn-outline-custom {
+  border-color: #47d7ac !important;
+  color: #47d7ac !important;
+}
+
+.btn-outline-custom:hover {
+  background-color: #47d7ac !important;
+  color: white !important;
+}
+.container h1 {
+  font-family: "Cursive", sans-serif;
+  font-size: 2rem;
+}
+
+.big-w {
+  font-size: 3rem;
+  font-weight: bold; 
+  color: #47d7ac;
+}
+
+.navbar-custom {
+  background-color: #47d7ac;
+}
+
+.text-custom {
+  color: #47d7ac;
+}
