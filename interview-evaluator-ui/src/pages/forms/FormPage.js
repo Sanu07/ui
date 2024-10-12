@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import "./FormPage.css";
 import CustomNavbar from "../../components/Navbar";
 
@@ -8,10 +9,37 @@ const FormPage = () => {
   const [marksFile, setMarksFile] = useState(null); // State for interviewer marks file
   const [experience, setExperience] = useState("");
   const [genus, setGenus] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ file, marksFile, experience, genus }); // Log all values
+
+    // Create a FormData object to send files and form data in the request
+    const formData = new FormData();
+    formData.append("docFile", file); // Appending the docFile
+    formData.append("excelFile", marksFile); // Appending the excelFile (marksFile)
+    formData.append("experience", experience); // Appending the number (experience as integer)
+    formData.append("genus", genus); // Appending the text (genus as string)
+
+    try {
+      const response = await fetch("http://localhost:8080/interview/qna", {
+        method: "POST",
+        body: formData,
+        // No need to set Content-Type for multipart requests. The browser will set it automatically.
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Success:", data);
+        navigate("/qna", { state: { data } });
+      } else {
+        console.error("Error submitting form");
+        alert("Error submitting form");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error submitting form");
+    }
   };
 
   return (
@@ -53,9 +81,9 @@ const FormPage = () => {
               onChange={(e) => setGenus(e.target.value)}
             >
               <option value="">Select Genus</option>
-              <option value="Homo Sapiens">Homo Sapiens</option>
-              <option value="Neanderthal">Neanderthal</option>
-              <option value="Denisovan">Denisovan</option>
+              <option value="java">Java</option>
+              <option value="java-fullstack">Java fullstack</option>
+              <option value="machine-learning">Machine Learning</option>
               {/* Add more options as needed */}
             </Form.Select>
           </Form.Group>

@@ -9,7 +9,7 @@ import {
   Container,
 } from "react-bootstrap";
 import CustomNavbar from "../../components/Navbar";
-import interviewData from "../../data/interviewData.json";
+import { useLocation } from "react-router-dom";
 
 const QnAPage = () => {
   const [conversations, setConversations] = useState([]);
@@ -18,10 +18,37 @@ const QnAPage = () => {
   const [editedDifficulty, setEditedDifficulty] = useState("");
   const [editedTechnology, setEditedTechnology] = useState("");
   const [suggestedQuestion, setSuggestedQuestion] = useState(""); // Track selected suggested question
+  const location = useLocation();
+  const [interviewer, setInterviewer] = useState("");
+  const [interviewee, setInterviewee] = useState("");
+  const [isUpdated, setIsUpdated] = useState([]); // Track if a question has been updated
+  // const [suggestedQuestions, setSuggestedQuestions] = useState([]); // Store suggested questions
 
   useEffect(() => {
-    setConversations(interviewData.conversations);
-  }, []);
+    if (location.state && location.state.data) {
+      const { interviewer, interviewee, questionsAndAnswers } =
+        location.state.data;
+      setInterviewer(interviewer);
+      setInterviewee(interviewee);
+
+      // Extract QnA data and suggested questions from the response
+      const formattedConversations = questionsAndAnswers.map((qna) => {
+        return {
+          question: qna.question,
+          answer: qna.answer,
+          difficulty: qna.difficulty,
+          technology: qna.technology,
+          llmDifficulty: qna.difficulty,
+          llmTechnology: qna.technology,
+          suggestedQuestions: qna.suggestedQuestions
+        };
+      });
+
+      // Set the formatted conversations to state
+      setConversations(formattedConversations);
+      setIsUpdated(new Array(questionsAndAnswers.length).fill(false));
+    }
+  }, [location.state]);
 
   const handleEdit = (index) => {
     setSelectedQuestion(index);
@@ -38,8 +65,63 @@ const QnAPage = () => {
     }
     updatedConversations[selectedQuestion].difficulty = editedDifficulty;
     updatedConversations[selectedQuestion].technology = editedTechnology;
+
+    const updatedStatus = [...isUpdated];
+    updatedStatus[selectedQuestion] = true; // Set isUpdated for the selected question
+    setIsUpdated(updatedStatus);
+
     setConversations(updatedConversations);
     setShowModal(false);
+  };
+
+  const handleAnalyze = async () => {
+    // Map the conversations to create the QuestionAndAnswers structure
+    const questionAndAnswers = conversations.map((item, index) => ({
+      questionId: item.id, // Assuming each conversation has an id
+      question: item.question,
+      answer: item.answer, // Include the answer if needed
+      selectedTechnology: item.technology,
+      selectedDifficulty: item.difficulty,
+      llmTechnology: item.llmTechnology, // Assuming llmTechnology is part of qna
+      llmDifficulty: item.llmDifficulty, // Assuming llmDifficulty is part of qna
+    }));
+
+    // Create the AnalyseRequest object
+    const postData = {
+      experience: 5, // Assuming a fixed experience value, replace as needed
+      questionAndAnswers: questionAndAnswers,
+    };
+
+    try {
+      const response = await fetch(
+        "http://localhost:8080/interview/updateDetails",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Analysis submitted successfully:", data);
+        alert("Analysis submitted successfully!");
+      } else {
+        console.error("Error submitting analysis");
+        alert("Error submitting analysis");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error submitting analysis");
+    }
+  };
+
+  const getDifficultyLabel = (difficulty) => {
+    if (difficulty <= 2) return "Easy";
+    if (difficulty <= 4) return "Medium";
+    return "Hard";
   };
 
   return (
@@ -58,17 +140,13 @@ const QnAPage = () => {
                   <Badge bg="info" className="me-2">
                     Interviewer
                   </Badge>
-                  <span style={{ color: "#47d7ac" }}>
-                    {interviewData.Interviewer}
-                  </span>
+                  <span style={{ color: "#47d7ac" }}>{interviewer}</span>
                 </h5>
                 <h5>
                   <Badge bg="warning" className="me-2">
                     Interviewee
                   </Badge>
-                  <span style={{ color: "#47d7ac" }}>
-                    {interviewData.Interviewee}
-                  </span>
+                  <span style={{ color: "#47d7ac" }}>{interviewee}</span>
                 </h5>
               </div>
             </Col>
@@ -130,8 +208,8 @@ const QnAPage = () => {
               </Form.Group>
             </div>
           ))}
-          <Button variant="primary" className="mt-3">
-            Analysis
+          <Button variant="primary" className="mt-3" onClick={handleAnalyze}>
+            Analyze
           </Button>
         </Container>
       </div>
@@ -145,20 +223,19 @@ const QnAPage = () => {
             {/* Suggested Questions */}
             <Form.Group className="mb-3">
               <Form.Label>Suggested Questions</Form.Label>
-              <Form.Check
-                type="radio"
-                label="What is a Circuit Breaker pattern?"
-                name="suggestedQuestions"
-                value="What is a Circuit Breaker pattern?"
-                onChange={(e) => setSuggestedQuestion(e.target.value)}
-              />
-              <Form.Check
-                type="radio"
-                label="Explain Kafka and its key features."
-                name="suggestedQuestions"
-                value="Explain Kafka and its key features."
-                onChange={(e) => setSuggestedQuestion(e.target.value)}
-              />
+              {conversations[selectedQuestion]?.suggestedQuestions &&
+                conversations[selectedQuestion].suggestedQuestions.map(
+                  (question, index) => (
+                    <Form.Check
+                      key={index}
+                      type="radio"
+                      label={question}
+                      name="suggestedQuestions"
+                      value={question}
+                      onChange={(e) => setSuggestedQuestion(e.target.value)}
+                    />
+                  )
+                )}
             </Form.Group>
 
             <Form.Group>
@@ -168,13 +245,16 @@ const QnAPage = () => {
                 value={editedDifficulty}
                 onChange={(e) => setEditedDifficulty(e.target.value)}
               >
-                <option value="1">1 - Easy (Level 1)</option>
-                <option value="2">2 - Easy (Level 2)</option>
-                <option value="3">3 - Medium (Level 1)</option>
-                <option value="4">4 - Medium (Level 2)</option>
-                <option value="5">5 - Hard</option>
+                {Array.from({ length: 5 }, (_, index) => index + 1).map(
+                  (difficulty) => (
+                    <option key={difficulty} value={difficulty}>
+                      {difficulty} - {getDifficultyLabel(difficulty)}
+                    </option>
+                  )
+                )}
               </Form.Control>
             </Form.Group>
+
             <Form.Group className="mt-2">
               <Form.Label>Technology</Form.Label>
               <Form.Control
@@ -182,9 +262,17 @@ const QnAPage = () => {
                 value={editedTechnology}
                 onChange={(e) => setEditedTechnology(e.target.value)}
               >
-                <option value="Circuit Breaker">Circuit Breaker</option>
-                <option value="Microservices">Microservices</option>
-                <option value="Kafka">Kafka</option>
+                {[
+                  "microservice",
+                  "java",
+                  "springboot",
+                  "database",
+                  "devops",
+                ].map((tech, index) => (
+                  <option key={index} value={tech}>
+                    {tech}
+                  </option>
+                ))}
               </Form.Control>
             </Form.Group>
           </Form>

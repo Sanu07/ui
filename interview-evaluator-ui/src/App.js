@@ -7,6 +7,7 @@ import QnAPage from './pages/qna/QnAPage';
 import CustomNavbar from './components/Navbar';
 import AnalysisDashboard from './pages/reports/AnalysisDashboard';
 import ComparisonFormPage from './pages/candidate-comparison/ComparisonFormPage';
+import ComparisonResultPage from './pages/candidate-comparison/ComparisonResultPage';
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                             <Route path="/qna" element={<QnAPage />} />
                             <Route path="/analysis" element={<AnalysisDashboard />} />
                             <Route path="/compare" element={<ComparisonFormPage />} />
+                            <Route path="/compare-result" element={<ComparisonResultPage />} />
                         </Routes>
                     </div>
                 } />

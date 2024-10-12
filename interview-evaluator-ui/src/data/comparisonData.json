@@ -1,0 +1,67 @@
+{
+   "jobAnalysis": {
+       "experience": "4-8",
+       "jobDescription": "This is a senior developer position requiring experience in microservices and DevOps.",
+       "mandatorySkills": [
+           "Solid experience in Docker and Kubernetes",
+           "Strong Development experience in Springboot and Microservices"
+       ],
+       "goodToHave": [
+           "Experience in handling MySQL databases",
+           "Ability to write clean, readable Java code"
+       ],
+       "weightage": {
+           "microservice": 20,
+           "devops": 20,
+           "springboot": 20,
+           "experience": 20,
+           "java": 10,
+           "database": 10
+       }
+   },
+   "results": [
+       {
+           "name": "Adam",
+           "rank": 1,
+           "weightage": {
+               "calculation": "((4/5) * 20) + ((5/5) * 20) + ((3/5) * 20) + 20 + (0 * 10) + (0 * 10) = 88",
+               "explanation": [
+                   "Java and database skills were not rated, so their contributions are zero."
+               ]
+           },
+           "feedback": [
+               "Adam has strong experience in devops (5) and microservices (4) which is a good fit for the role, along with good experience in springboot (3) and matches the required experience level.",
+               "Although his interview complexity is lower than others, his overall score is higher as compared to others and hence he is ranked higher."
+           ]
+       },
+       {
+           "name": "Bob",
+           "rank": 2,
+           "weightage": {
+               "calculation": "(0 * 20) + (0 * 20) + ((5/5) * 20) + 20 + ((5/5) * 10) + ((3/5) * 10) = 80",
+               "explanation": [
+                   "Bob did not receive specific ratings for microservices and devops, so their contributions are zero."
+               ]
+           },
+           "feedback": [
+               "Bob has great experience in Java (5) and Springboot (5) which are mandatory skills, he also has good experience in database (3) which is a plus point.",
+               "Although Bob has more experience than Adam, his interview complexity is higher and he is ranked lower as compared to Adam."
+           ]
+       },
+       {
+           "name": "Charlie",
+           "rank": 3,
+           "weightage": {
+               "calculation": "((4/5) * 20) + ((4/5) * 20) + ((3/5) * 20) + (0 * 20) + (0 * 10) + (0 * 10) = 76",
+               "explanation": [
+                   "Charlie did not meet the experience requirement, so his experience contribution is zero.",
+                   "Java and database skills were not rated, so their contributions are zero."
+               ]
+           },
+           "feedback": [
+               "Charlie has good experience in devops (4) and microservices (4) which is a good fit for the role. He also has decent experience in Springboot (3).",
+               "Charlie does not match the experience requirement and his interview complexity is higher, hence he is ranked lower."
+           ]
+       }
+   ]
+}

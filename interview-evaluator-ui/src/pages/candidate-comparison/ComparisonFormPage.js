@@ -1,14 +1,13 @@
-// src/pages/ComparisonFormPage.js
 import React, { useState } from "react";
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import CustomNavbar from "../../components/Navbar";
 
 const ComparisonFormPage = () => {
-  const [pdfFile, setPdfFile] = useState(null);
+  const [jobDescription, setJobDescription] = useState(""); // Textarea for job description
   const [candidates, setCandidates] = useState([""]);
 
-  const handleFileChange = (e) => {
-    setPdfFile(e.target.files[0]);
+  const handleJobDescriptionChange = (e) => {
+    setJobDescription(e.target.value);
   };
 
   const handleCandidateChange = (index, value) => {
@@ -28,11 +27,40 @@ const ComparisonFormPage = () => {
     setCandidates(newCandidates);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("PDF File:", pdfFile);
-    console.log("Candidates:", candidates);
+
+    if (!jobDescription) {
+      alert("Please enter the job description");
+      return;
+    }
+
+    const formData = {
+      jobDescription,
+      candidates,
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/interview/compareAndRank", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("API Response:", result);
+        alert("Form submitted successfully!");
+      } else {
+        console.error("Error submitting form:", response.statusText);
+        alert("Failed to submit the form.");
+      }
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      alert("An error occurred while submitting the form.");
+    }
   };
 
   return (
@@ -43,15 +71,17 @@ const ComparisonFormPage = () => {
           className="form-container"
           style={{ width: "100%", maxWidth: "600px" }}
         >
-          <h2 className="text-center">Comparison Form</h2>
+          <h2 className="text-center">Compare and Rank Candidates</h2>
           <Form onSubmit={handleSubmit}>
-            {/* PDF Upload */}
-            <Form.Group controlId="formFile" className="mb-3">
-              <Form.Label>Upload Job Description PDF</Form.Label>
+            {/* Job Description Textarea */}
+            <Form.Group controlId="formJobDescription" className="mb-3">
+              <Form.Label>Enter Job Description</Form.Label>
               <Form.Control
-                type="file"
-                accept="application/pdf"
-                onChange={handleFileChange}
+                as="textarea"
+                rows={5}
+                value={jobDescription}
+                onChange={handleJobDescriptionChange}
+                placeholder="Enter the job description here..."
               />
             </Form.Group>
 
