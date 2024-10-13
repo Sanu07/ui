@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Container, Row, Col, Table, ListGroup, Card } from "react-bootstrap";
 import CustomNavbar from "../../components/Navbar";
-import comparisonData from "../../data/comparisonData.json"; // Assuming the file is located here
+import { useLocation } from 'react-router-dom'; // Import useLocation
 
 const ComparisonResultPage = () => {
-  const [data, setData] = useState(null);
+  const location = useLocation();
+  const data = location.state?.result; // Access the result passed from the previous page
 
-  // Fetch the JSON data
-  useEffect(() => {
-    // Simulate fetching the data from a file
-    setData(comparisonData);
-  }, []);
-
-  if (!data) return <div>Loading...</div>;
+  if (!data) return <div>Loading...</div>; // Handle case where data is not present
 
   return (
     <div>
@@ -98,25 +93,27 @@ const ComparisonResultPage = () => {
                       <>
                         <h6>Explanation:</h6>
                         <ListGroup>
-                          {result.weightage.explanation.map(
-                            (exp, explanationIndex) => (
-                              <ListGroup.Item key={explanationIndex}>
-                                {exp}
-                              </ListGroup.Item>
-                            )
-                          )}
+                          {result.weightage.explanation.map((exp, explanationIndex) => (
+                            <ListGroup.Item key={explanationIndex}>
+                              {exp}
+                            </ListGroup.Item>
+                          ))}
                         </ListGroup>
                       </>
                     )}
 
                     <h6 className="mt-4">Feedback:</h6>
-                    <ListGroup>
-                      {result.feedback.map((feedback, feedbackIndex) => (
-                        <ListGroup.Item key={feedbackIndex}>
-                          {feedback}
-                        </ListGroup.Item>
-                      ))}
-                    </ListGroup>
+                    {result.feedback.length > 0 ? (
+                      <ListGroup>
+                        {result.feedback.map((feedback, feedbackIndex) => (
+                          <ListGroup.Item key={feedbackIndex}>
+                            {feedback || "No feedback available."} {/* Handle empty feedback */}
+                          </ListGroup.Item>
+                        ))}
+                      </ListGroup>
+                    ) : (
+                      <p>No feedback available.</p> // Handle case when feedback is empty
+                    )}
                   </Col>
                 </Row>
               </Card.Body>

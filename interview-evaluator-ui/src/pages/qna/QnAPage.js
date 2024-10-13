@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 import CustomNavbar from "../../components/Navbar";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const QnAPage = () => {
   const [conversations, setConversations] = useState([]);
@@ -20,19 +21,21 @@ const QnAPage = () => {
   const [suggestedQuestion, setSuggestedQuestion] = useState(""); // Track selected suggested question
   const location = useLocation();
   const [interviewer, setInterviewer] = useState("");
+  const [interviewId, setInterviewId] = useState("");
   const [interviewee, setInterviewee] = useState("");
   const [isUpdated, setIsUpdated] = useState([]); // Track if a question has been updated
-  // const [suggestedQuestions, setSuggestedQuestions] = useState([]); // Store suggested questions
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (location.state && location.state.data) {
-      const { interviewer, interviewee, questionsAndAnswers } =
+      const { interviewer, interviewee, conversations, interviewId } =
         location.state.data;
       setInterviewer(interviewer);
       setInterviewee(interviewee);
+      setInterviewId(interviewId);
 
       // Extract QnA data and suggested questions from the response
-      const formattedConversations = questionsAndAnswers.map((qna) => {
+      const formattedConversations = conversations.map((qna) => {
         return {
           question: qna.question,
           answer: qna.answer,
@@ -46,7 +49,7 @@ const QnAPage = () => {
 
       // Set the formatted conversations to state
       setConversations(formattedConversations);
-      setIsUpdated(new Array(questionsAndAnswers.length).fill(false));
+      setIsUpdated(new Array(conversations.length).fill(false));
     }
   }, [location.state]);
 
@@ -90,6 +93,7 @@ const QnAPage = () => {
     const postData = {
       experience: 5, // Assuming a fixed experience value, replace as needed
       questionAndAnswers: questionAndAnswers,
+      interviewId: interviewId
     };
 
     try {
@@ -107,7 +111,15 @@ const QnAPage = () => {
       if (response.ok) {
         const data = await response.json();
         console.log("Analysis submitted successfully:", data);
-        alert("Analysis submitted successfully!");
+        const evaluationData = {
+          ...data,            // Spread the original data from the response
+          conversations: conversations,
+          interviewId: interviewId,
+          interviewer: interviewer,
+          interviewee: interviewee,
+        };
+        // Navigate to the evaluation page and pass the response data
+        navigate("/evaluation", { state: { evaluationData: evaluationData } });
       } else {
         console.error("Error submitting analysis");
         alert("Error submitting analysis");

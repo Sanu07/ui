@@ -10,24 +10,43 @@ import {
   Badge,
 } from "react-bootstrap";
 import CustomNavbar from "../../components/Navbar";
-import interviewData from "../../data/interviewData.json";
-import evaluationData from "../../data/evaluation.json";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const EvaluationPage = () => {
   const [conversations, setConversations] = useState([]);
   const [evaluations, setEvaluations] = useState([]);
   const [showDetails, setShowDetails] = useState([]); // State to handle show/hide for each question
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { evaluationData } = location.state || {};
+  const { interviewId, interviewer, interviewee, conversations: convos } =
+    evaluationData || {};
 
   useEffect(() => {
-    setConversations(interviewData.conversations);
-    setEvaluations(evaluationData.evaluation);
-    setShowDetails(Array(interviewData.conversations.length).fill(false)); // Initialize with false (hidden)
-  }, []);
+    if (evaluationData) {
+      setConversations(convos || []);
+      setEvaluations(evaluationData.evaluation || []);
+      setShowDetails(Array((convos || []).length).fill(false));
+    }
+  }, [convos, evaluationData]);
 
   const toggleShowDetails = (index) => {
     const updatedShowDetails = [...showDetails];
-    updatedShowDetails[index] = !updatedShowDetails[index]; // Toggle show/hide
+    updatedShowDetails[index] = !updatedShowDetails[index];
     setShowDetails(updatedShowDetails);
+  };
+
+  const handleNavigateToAnalysis = () => {
+    navigate("/analysis", {
+      state: {
+        interviewId: interviewId,
+        interviewer: interviewer,
+        interviewee: interviewee,
+        conversations: convos,
+        evaluationData: evaluationData
+      },
+    });
   };
 
   return (
@@ -42,17 +61,13 @@ const EvaluationPage = () => {
                   <Badge bg="info" className="me-2">
                     Interviewer
                   </Badge>
-                  <span style={{ color: "#47d7ac" }}>
-                    {interviewData.Interviewer}
-                  </span>
+                  <span style={{ color: "#47d7ac" }}>{interviewer}</span>
                 </h5>
                 <h5>
                   <Badge bg="warning" className="me-2">
                     Interviewee
                   </Badge>
-                  <span style={{ color: "#47d7ac" }}>
-                    {interviewData.Interviewee}
-                  </span>
+                  <span style={{ color: "#47d7ac" }}>{interviewee}</span>
                 </h5>
               </div>
             </Col>
@@ -152,6 +167,17 @@ const EvaluationPage = () => {
               )}
             </Card>
           ))}
+
+          {/* Button to navigate to the analysis page */}
+          <div className="text-end">
+            <Button
+              variant="secondary"
+              className="mt-4"
+              onClick={handleNavigateToAnalysis}
+            >
+              Go to Analysis Page
+            </Button>
+          </div>
         </Container>
       </div>
     </div>

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import CustomNavbar from "../../components/Navbar";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const ComparisonFormPage = () => {
   const [jobDescription, setJobDescription] = useState(""); // Textarea for job description
   const [candidates, setCandidates] = useState([""]);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleJobDescriptionChange = (e) => {
     setJobDescription(e.target.value);
@@ -35,9 +37,10 @@ const ComparisonFormPage = () => {
       return;
     }
 
+    // Prepare the request body as per CompareAndRankInputRequest
     const formData = {
       jobDescription,
-      candidates,
+      candidates: candidates.filter(Boolean), // Filter out any empty candidate names
     };
 
     try {
@@ -46,16 +49,18 @@ const ComparisonFormPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(formData), // Send the formData as JSON
       });
 
       if (response.ok) {
         const result = await response.json();
         console.log("API Response:", result);
-        alert("Form submitted successfully!");
+        
+        // Navigate to /compare-result with the response data
+        navigate("/compare-result", { state: { result } });
       } else {
         console.error("Error submitting form:", response.statusText);
-        alert("Failed to submit the form.");
+        alert("Failed to compare and rank candidates.");
       }
     } catch (error) {
       console.error("Error during form submission:", error);
@@ -93,9 +98,7 @@ const ComparisonFormPage = () => {
                     type="text"
                     placeholder={`Candidate ${index + 1} Name`}
                     value={candidate}
-                    onChange={(e) =>
-                      handleCandidateChange(index, e.target.value)
-                    }
+                    onChange={(e) => handleCandidateChange(index, e.target.value)}
                   />
                 </Col>
                 <Col xs={2}>
