@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import CustomNavbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import './ComparisonFormPage.css'; // Import the CSS file
 
 const ComparisonFormPage = () => {
   const [jobDescription, setJobDescription] = useState(""); // Textarea for job description
   const [candidates, setCandidates] = useState([""]);
+  const [statusMessage, setStatusMessage] = useState(""); // State for status message
   const navigate = useNavigate(); // Initialize useNavigate
 
   const handleJobDescriptionChange = (e) => {
@@ -43,6 +45,15 @@ const ComparisonFormPage = () => {
       candidates: candidates.filter(Boolean), // Filter out any empty candidate names
     };
 
+    setStatusMessage("Analyzing the Job Description...");
+    setTimeout(() => {
+      setStatusMessage("Assigning weightage...");
+    }, 2000);
+
+    setTimeout(() => {
+      setStatusMessage("Analyzing candidates...");
+    }, 2000);
+
     try {
       const response = await fetch("http://localhost:8080/interview/compareAndRank", {
         method: "POST",
@@ -65,6 +76,8 @@ const ComparisonFormPage = () => {
     } catch (error) {
       console.error("Error during form submission:", error);
       alert("An error occurred while submitting the form.");
+    } finally {
+      setStatusMessage(""); // Clear the status message after submission
     }
   };
 
@@ -121,9 +134,13 @@ const ComparisonFormPage = () => {
                 </Button>
               </Col>
               <Col xs={6}>
-                <Button variant="outline-custom" type="submit">
-                  Submit
-                </Button>
+                {statusMessage ? (
+                  <span className="status-message">{statusMessage}</span> // Show status message with styling
+                ) : (
+                  <Button variant="outline-custom" type="submit">
+                    Submit
+                  </Button>
+                )}
               </Col>
             </Row>
           </Form>

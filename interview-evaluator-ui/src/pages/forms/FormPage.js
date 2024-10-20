@@ -1,31 +1,31 @@
 import React, { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./FormPage.css";
 import CustomNavbar from "../../components/Navbar";
 
 const FormPage = () => {
   const [file, setFile] = useState(null);
-  const [marksFile, setMarksFile] = useState(null); // State for interviewer marks file
+  const [marksFile, setMarksFile] = useState(null);
   const [experience, setExperience] = useState("");
   const [genus, setGenus] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // Create a FormData object to send files and form data in the request
     const formData = new FormData();
-    formData.append("docFile", file); // Appending the docFile
-    formData.append("excelFile", marksFile); // Appending the excelFile (marksFile)
-    formData.append("experience", experience); // Appending the number (experience as integer)
-    formData.append("genus", genus); // Appending the text (genus as string)
+    formData.append("docFile", file);
+    formData.append("excelFile", marksFile);
+    formData.append("experience", experience);
+    formData.append("genus", genus);
 
     try {
       const response = await fetch("http://localhost:8080/interview/qna", {
         method: "POST",
         body: formData,
-        // No need to set Content-Type for multipart requests. The browser will set it automatically.
       });
 
       if (response.ok) {
@@ -39,6 +39,8 @@ const FormPage = () => {
     } catch (error) {
       console.error("Error:", error);
       alert("Error submitting form");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,7 +62,7 @@ const FormPage = () => {
             <Form.Label>Upload Interviewer Marks File</Form.Label>
             <Form.Control
               type="file"
-              onChange={(e) => setMarksFile(e.target.files[0])} // Update state for marks file
+              onChange={(e) => setMarksFile(e.target.files[0])}
             />
           </Form.Group>
 
@@ -81,15 +83,21 @@ const FormPage = () => {
               onChange={(e) => setGenus(e.target.value)}
             >
               <option value="">Select Genus</option>
-              <option value="java">Java</option>
-              <option value="java-fullstack">Java fullstack</option>
-              <option value="machine-learning">Machine Learning</option>
+              <option value="java_3.3">Java 3.3</option>
+              <option value="java-fullstack_3.3">Java fullstack 3.3</option>
+              <option value="machine-learning_3.3">Machine Learning 3.3</option>
               {/* Add more options as needed */}
             </Form.Select>
           </Form.Group>
 
-          <Button variant="outline-custom" type="submit">
-            Submit
+          <Button 
+            variant="outline-custom" 
+            type="submit" 
+            disabled={loading} 
+            style={{ width: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} // Fixed width
+          >
+            {loading && <Spinner animation="border" size="sm" style={{ marginRight: '5px' }} />}
+            {loading ? "Processing..." : "Submit"}
           </Button>
         </Form>
       </div>

@@ -1,0 +1,18 @@
+.status-message {
+    color: #47d7ac;
+    font-size: 1.2em;
+    animation: zoom 0.5s ease;
+  }
+  
+  @keyframes zoom {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
